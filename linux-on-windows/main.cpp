@@ -20,7 +20,6 @@ int main() {
     string input;
 
     while (true) {
-        //printing current directory
         cout << endl << '>';
 
         getline(cin, input);
