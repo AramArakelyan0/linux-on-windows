@@ -1,5 +1,3 @@
-﻿  functions.cpp
-  main.cpp
-C:\Users\Acer Nitro 5\Desktop\linux-on-windows\linux-on-windows\main.cpp(31,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  Generating Code...
+﻿  main.cpp
+C:\Users\Acer Nitro 5\Desktop\linux-on-windows\linux-on-windows\main.cpp(40,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   linux-on-windows.vcxproj -> C:\Users\Acer Nitro 5\Desktop\linux-on-windows\x64\Debug\linux-on-windows.exe

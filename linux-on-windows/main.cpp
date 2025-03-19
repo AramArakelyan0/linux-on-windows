@@ -7,30 +7,40 @@
 using namespace std;
 
 
-int main() {
-    map <string, void (*)(const string)> functionMap;
+int main() {   
+    map<string, void (*)(const string&)> functionMap;
 
     functionMap.insert({ "touch", createFile });
+    functionMap.insert({ "cd", changeDirectory });
+    functionMap.insert({ "pwd", printDirectory });
+    functionMap.insert({ "ls", listDirectoryItems });
+    functionMap.insert({ "mkdir", createDirectory });
 
     cout << "Please enter a valid command. Type [exit] to end the program." << endl;
     string input;
 
     while (true) {
+        //printing current directory
         cout << endl << '>';
+
         getline(cin, input);
         if (input == "exit")
         {
             break;
         }
 
-        string command, argument;
+
+        string command;
+        string argument;
         stringstream toBeSplitted(input);
 
+        //splitting input into command and argument parts
         toBeSplitted >> command;
         getline(toBeSplitted, argument);
         int pos = argument.find_first_not_of(' ');
         argument.erase(0, pos);
 
+        //mapping the command to the corresponding function from functionMap
         auto it = functionMap.find(command);
         if (it != functionMap.end())
         {
