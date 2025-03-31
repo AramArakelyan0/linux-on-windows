@@ -11,3 +11,4 @@ std::string getCurrentDirectory();
 void listDirectoryItems(const std::string&);
 void createDirectory(const std::string&);
 void printDirectory(const std::string&);
+void removeFile(const std::string&);

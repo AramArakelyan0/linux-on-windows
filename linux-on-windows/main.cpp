@@ -15,13 +15,13 @@ int main() {
     functionMap.insert({ "pwd", printDirectory });
     functionMap.insert({ "ls", listDirectoryItems });
     functionMap.insert({ "mkdir", createDirectory });
+    functionMap.insert({ "rm", removeFile });
 
     cout << "Please enter a valid command. Type [exit] to end the program." << endl;
     string input;
 
     while (true) {
         cout << endl << '>';
-
         getline(cin, input);
         if (input == "exit")
         {

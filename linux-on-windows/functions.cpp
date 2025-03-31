@@ -32,7 +32,7 @@ string getCurrentDirectory()
         return string(buffer);
     }
 
-    return "Unknown";  // If an error occurs
+    return "Unknown";
 }
 
 void printDirectory(const string&)
@@ -100,7 +100,20 @@ void listDirectoryItems(const string&)
             cout << "[FILE] " << name << endl;  
         }
 
-    } while (::FindNextFileA(hFind, &fd));
+    } while (FindNextFileA(hFind, &fd));
 
-    ::FindClose(hFind);
+    FindClose(hFind);
+}
+
+void removeFile(const string& fileName)
+{
+
+    if (DeleteFileA(fileName.c_str()))
+    {
+        cout << "File '" << fileName << "' deleted successfully.";
+    }
+    else
+    {
+        cout << "Failed to delete file '" << fileName << "'. Error: " << GetLastError() << endl;
+    }
 }
