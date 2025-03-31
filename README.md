@@ -12,3 +12,7 @@ The project is still in progress, and there will be regular updates with new com
           ls [directory]: List contents of a directory.
           
           mkdir [directory]: Create a new directory.
+
+          rmdir [directory]: Remove an empty directory.
+
+          rm [filename](-r, -d flags): Remove file or directory.
