@@ -117,23 +117,88 @@ void listDirectoryItems(const string&)
 
 void removeFile(const string& fileName)
 {
-    if (fileName.substr(0 ,2) == "-r")
+    //checking for directory -d flag
+    if (fileName.substr(0, 3) == "-d ")
     {
-        removeDirectory(fileName.substr(3));
+        if (RemoveDirectoryA(fileName.substr(3).c_str()))
+        {
+            cout << "Directory '" << fileName.substr(3) << "' deleted successfully.";
+        }
+        else
+        {
+            cout << "Failed to delete directory '" << fileName.substr(3) << "'. Error: " << getErrorMessage() << endl;
+        }
+        
         return;
     }
 
-    if (DeleteFileA(fileName.c_str()))
-    {
-        cout << "File '" << fileName << "' deleted successfully.";
+    //checking for recursive -r flag
+    if (fileName.substr(0, 3) == "-r ") {       
+        string path = fileName.substr(3);
+
+        if (!path.empty() && path.back() == '\\') {
+            path.pop_back();
+        }
+
+        if (path.empty()) {
+            cout << "Error: No path specified for recursive deletion." << endl;
+            return;
+        }
+
+        string searchPath = path + "\\*";
+
+        //going through subdirectories and files inside
+        WIN32_FIND_DATAA fd;
+        HANDLE hFind = FindFirstFileA(searchPath.c_str(), &fd);
+        if (hFind == INVALID_HANDLE_VALUE) {
+            cout << "Failed to open directory '" << path << "'. Error: " << getErrorMessage() << endl;
+            return;
+        }
+
+        do {
+            string name = fd.cFileName;
+            if (name == "." || name == "..") continue;
+
+            string fullPath = path + "\\" + name;
+
+            if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+                //recursively empty the child directories
+                removeFile("-r " + fullPath);
+            }
+            else {
+                //delete the file
+                if (DeleteFileA(fullPath.c_str())) {
+                    cout << "File '" << fullPath << "' deleted successfully." << endl;
+                }
+                else {
+                    cout << "Failed to delete file '" << fullPath << "'. Error: " << getErrorMessage() << endl;
+                }
+            }
+        } while (FindNextFileA(hFind, &fd));
+
+        FindClose(hFind);
+
+        //removing the empty parent directory after deleting its contents
+        if (RemoveDirectoryA(path.c_str())) {
+            cout << "Directory '" << path << "' removed successfully." << endl;
+        }
+        else {
+            cout << "Failed to remove directory '" << path << "'. Error: " << getErrorMessage() << endl;
+        }
     }
-    else
-    {
-        cout << "Failed to delete file '" << fileName << "'. Error: " << getErrorMessage() << endl;
+
+    //standard file deletion
+    else {
+        if (DeleteFileA(fileName.c_str())) {
+            cout << "File '" << fileName << "' deleted successfully." << endl;
+        }
+        else {
+            cout << "Failed to delete file '" << fileName << "'. Error: " << getErrorMessage() << endl;
+        }
     }
 }
 
-void removeDirectory(const string& dirName)
+void removeEmptyDirectory(const string& dirName)
 {
     if (RemoveDirectoryA(dirName.c_str()))
     {

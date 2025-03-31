@@ -15,7 +15,7 @@ int main() {
     functionMap.insert({ "ls", listDirectoryItems });
     functionMap.insert({ "mkdir", createDirectory });
     functionMap.insert({ "rm", removeFile });
-    functionMap.insert({ "rmdir", removeDirectory });
+    functionMap.insert({ "rmdir", removeEmptyDirectory });
 
     cout << "Please enter a valid command. Type [exit] to end the program." << endl;
     string input;
