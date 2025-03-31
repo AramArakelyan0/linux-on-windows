@@ -2,6 +2,24 @@
 
 using namespace std;
 
+string getErrorMessage()
+{
+    DWORD errorId = GetLastError();
+    char errorMessage[265];
+
+    FormatMessageA(
+        FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        nullptr,
+        errorId,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        errorMessage,
+        sizeof(errorMessage),
+        nullptr
+    );
+
+    return string(errorMessage);
+}
+
 void createFile(const string& fileName)
 {
     HANDLE fileHandle = CreateFileA(
@@ -15,7 +33,7 @@ void createFile(const string& fileName)
     );
 
     if (fileHandle == INVALID_HANDLE_VALUE) {
-        cout << "Failed to create file '" << fileName << "'. Error: " << GetLastError() << endl;
+        cout << "Failed to create file '" << fileName << "'. Error: " << getErrorMessage() << endl;
     }
     else
     {
@@ -48,7 +66,7 @@ void changeDirectory(const string& newPath)
     }
     else
     {
-        cout << "Error: Failed to change directory. Error code: " << GetLastError() << endl;
+        cout << "Failed to change directory. Error: " << getErrorMessage() << endl;
     }
 }
 
@@ -61,15 +79,7 @@ void createDirectory(const string& newDir)
     }
     else
     {
-        DWORD errorCode = GetLastError();
-        if (errorCode == ERROR_ALREADY_EXISTS)
-        {
-            cout << "Error: The directory '" << newDir << "' already exists." << endl;
-        }
-        else
-        {
-            cout << "Error: Failed to create directory '" << newDir << "'. Error code: " << errorCode << endl;
-        }
+        cout << "Failed to create directory '" << newDir << "'. Error: " << getErrorMessage() << endl;
     }
 }
 
@@ -77,7 +87,7 @@ void listDirectoryItems(const string&)
 {
     string search_path = getCurrentDirectory() + "\\*";
     WIN32_FIND_DATAA fd;
-    HANDLE hFind = ::FindFirstFileA(search_path.c_str(), &fd);
+    HANDLE hFind = FindFirstFileA(search_path.c_str(), &fd);
     if (hFind == INVALID_HANDLE_VALUE)
     {
         cout << "Error: Could not open folder " << getCurrentDirectory() << "." << endl;
@@ -107,6 +117,11 @@ void listDirectoryItems(const string&)
 
 void removeFile(const string& fileName)
 {
+    if (fileName.substr(0 ,2) == "-r")
+    {
+        removeDirectory(fileName.substr(3));
+        return;
+    }
 
     if (DeleteFileA(fileName.c_str()))
     {
@@ -114,6 +129,18 @@ void removeFile(const string& fileName)
     }
     else
     {
-        cout << "Failed to delete file '" << fileName << "'. Error: " << GetLastError() << endl;
+        cout << "Failed to delete file '" << fileName << "'. Error: " << getErrorMessage() << endl;
+    }
+}
+
+void removeDirectory(const string& dirName)
+{
+    if (RemoveDirectoryA(dirName.c_str()))
+    {
+        cout << "Directory '" << dirName << "' deleted successfully.";
+    }
+    else
+    {
+        cout << "Failed to delete directory '" << dirName << "'. Error: " << getErrorMessage() << endl;
     }
 }

@@ -6,7 +6,6 @@
 
 using namespace std;
 
-
 int main() {   
     map<string, void (*)(const string&)> functionMap;
 
@@ -16,6 +15,7 @@ int main() {
     functionMap.insert({ "ls", listDirectoryItems });
     functionMap.insert({ "mkdir", createDirectory });
     functionMap.insert({ "rm", removeFile });
+    functionMap.insert({ "rmdir", removeDirectory });
 
     cout << "Please enter a valid command. Type [exit] to end the program." << endl;
     string input;
